@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    {include file="public/extend" /}
+</head>
+<body>
+{if condition="$product.images"}
+<hr/>
+<h1>当前有：{$product.images|count}张图片</h1>
+    <div class="row" id="show">
+        {foreach name="product.images" item="vo"}
+            <div class="col-md-3">
+                <img src="{$vo.image.img_url}" width="100%" height="300px;" style="border: 1px solid black;margin-top: 5px" >
+                <button type="button" class="layui-btn"  onclick="deletes('{$vo.image.id}','{$product.id}')">删除</button>
+            </div>
+        {/foreach}
+    </div>
+<hr/>
+{/if}
+<input type="hidden" id="brand" value="{$product.brand}">
+<input type="hidden" id="name" value="{$product.name}">
+<input type="hidden" id="id" value="{$product.id}">
+<fieldset class="layui-elem-field layui-field-title" style="margin-top: 30px;">
+    <legend>多文件列表上传,此上传列表的图片用于商品详情中显示</legend>
+</fieldset>
+<div class="layui-upload">
+    <button type="button" class="layui-btn layui-btn-normal" id="testList">选择多文件</button>
+    <div class="layui-upload-list">
+        <table class="layui-table">
+            <thead>
+            <tr><th>文件名</th>
+                <th>大小</th>
+                <th>状态</th>
+                <th>操作</th>
+            </tr></thead>
+            <tbody id="demoList"></tbody>
+        </table>
+    </div>
+    <button type="button" class="layui-btn" id="testListAction">开始上传</button>
+</div>
+<script>
+    layui.use('upload', function(){
+        var $ = layui.jquery
+                ,upload = layui.upload;
+        var brand=$('#brand').val();
+        var name=$('#name').val();
+        var id=$('#id').val();
+        var demoListView = $('#demoList')
+                ,uploadListIns = upload.render({
+            elem: '#testList'
+            ,url: '/admin/product/uploads'
+            ,accept: 'file'
+            ,multiple: true
+            ,data:{brand:brand,name:name,id:id}
+            ,auto: false
+            ,bindAction: '#testListAction'
+            ,choose: function(obj){
+                var files = this.files = obj.pushFile(); //将每次选择的文件追加到文件队列
+                //读取本地文件
+                obj.preview(function(index, file, result){
+                    var tr = $(['<tr id="upload-'+ index +'">'
+                        ,'<td>'+ file.name +'</td>'
+                        ,'<td>'+ (file.size/1014).toFixed(1) +'kb</td>'
+                        ,'<td>等待上传</td>'
+                        ,'<td>'
+                        ,'<button class="layui-btn layui-btn-xs demo-reload layui-hide">重传</button>'
+                        ,'<button class="layui-btn layui-btn-xs layui-btn-danger demo-delete">删除</button>'
+                        ,'</td>'
+                        ,'</tr>'].join(''));
+
+                    //单个重传
+                    tr.find('.demo-reload').on('click', function(){
+                        obj.upload(index, file);
+                    });
+
+                    //删除
+                    tr.find('.demo-delete').on('click', function(){
+                        delete files[index]; //删除对应的文件
+                        tr.remove();
+                        uploadListIns.config.elem.next()[0].value = ''; //清空 input file 值，以免删除后出现同名文件不可选
+                    });
+
+                    demoListView.append(tr);
+                });
+            }
+            ,done: function(res, index, upload){
+                if(res.status){ //上传成功
+                    var tr = demoListView.find('tr#upload-'+ index)
+                            ,tds = tr.children();
+                    tds.eq(2).html('<span style="color: #5FB878;">上传成功</span>');
+                    tds.eq(3).html(''); //清空操作
+                    delete this.files[index]; //删除文件队列已经上传成功的文件
+                    window.location.reload();
+                }else {
+                    layer.msg(res.message,{icon:2});
+                    this.error(index, upload);
+                    return false;
+                }
+
+            }
+            ,error: function(index, upload){
+                var tr = demoListView.find('tr#upload-'+ index)
+                        ,tds = tr.children();
+                tds.eq(2).html('<span style="color: #FF5722;">上传失败</span>');
+                tds.eq(3).find('.demo-reload').removeClass('layui-hide'); //显示重传
+            }
+        });
+    });
+
+
+    function deletes(id,pid){
+        $.get('/admin/product/delete',{iid:id,pid:pid},function(res){
+            if(res.status){
+                layer.msg(res.message,{icon:1});
+                window.location.reload();
+            }else {
+                layer.msg(res.message,{icon:2});
+                return false;
+            }
+        })
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,116 @@
+<ul class="layui-nav">
+    <li class="layui-nav-item ">
+        <a href="/">首页</a>
+    </li>
+    <li class="layui-nav-item">
+        <a style="cursor: pointer;" id="personal" >个人中心<span class="layui-badge-dot"></span></a>
+    </li>
+    <li class="layui-nav-item">
+        <a style="cursor: pointer;" id="messages">消息<span class="layui-badge" id="message"></span></a>
+    </li>
+    <li class="layui-nav-item">
+        <a style="cursor: pointer;" onclick="car()"><span class="glyphicon glyphicon-shopping-cart" aria-hidden="true"></span>&nbsp;购物车<span class="layui-badge-dot"></span></a>
+    </li>
+    <li class="layui-nav-item">
+        <a style="cursor: pointer;" onclick="order()">我的订单<span class="layui-badge-dot"></span></a>
+    </li>
+    <li class="layui-nav-item" >
+        <a>更多</a>
+        <dl class="layui-nav-child ">
+            <dd><a id="link">网站信息</a></dd>
+            <dd><a  style="cursor: pointer;"  data-toggle="modal" data-target="#myModal3">反馈</a></dd>
+        </dl>
+    </li>
+    {if condition="$Think.session.user_info"}
+        <li class="layui-nav-item" style="float: right;">
+           <img src="{$Think.session.user_info.avatar_url}" class="layui-nav-img">我
+            <dl class="layui-nav-child">
+                <dd><a style="cursor: pointer;" onclick="logout()">退了</a></dd>
+            </dl>
+        </li>
+    {else/}
+        <li class="layui-nav-item" style="float: right;" >
+            <div  style="cursor: pointer;" data-toggle="modal" data-target="#myModal1" id="register">注册</div>
+        </li>
+        <li class="layui-nav-item" style="float: right;" >
+            <a style="cursor: pointer;" data-toggle="modal" data-target="#myModal2" >登入</a>
+        </li>
+    {/if}
+
+</ul>
+
+<script>
+    var i=1;
+    function inform(){
+        if(i>0){
+            $.get('http://www.shop.com/informs',{},function(res){
+                if(res.status){
+                    $('#message').empty();
+                    $('#message').text(res.message);
+                }else {
+                    $('#message').text(0);
+                    return false;
+                }
+            });
+
+            setTimeout(function(){
+                inform();
+            },300000000);
+        }
+
+
+    }
+    inform();
+
+    $('#link').click(function(){
+        layer.tips('本网站由个人开发纯粹用于娱乐项目 禁止用于商用 ^o^', '#link',{
+            tips: [1, 'black'],
+            time: 4000
+        });
+    });
+
+    function car(){
+        $.get('http://www.shop.com/index/car',{},function(res){
+            if(res.status==0){
+                layer.msg(res.message,{icon:2});
+                return false;
+            }else {
+                window.location.href='http://www.shop.com/index/car';
+            }
+        },'json')
+    }
+
+    function order(){
+        $.get('http://www.shop.com/index/order',{},function(res){
+            if(res.status==0){
+                layer.msg(res.message,{icon:2});
+                return false;
+            }else {
+                window.location.href='http://www.shop.com/index/order';
+            }
+        },'json')
+    }
+
+    $('#personal').click(function(){
+        $.get('http://www.shop.com/index/personal',{},function(res){
+            if(res.status==0){
+                layer.msg(res.message,{icon:2});
+                return false;
+            }else {
+                window.location.href='http://www.shop.com/index/personal';
+            }
+        },'json')
+    });
+
+    $('#messages').click(function(){
+        $.get('http://www.shop.com/index/message',{},function(res){
+            if(res.status==0){
+                layer.msg(res.message,{icon:2});
+                return false;
+            }else {
+                window.location.href='http://www.shop.com/index/message';
+            }
+        },'json')
+    })
+
+</script>

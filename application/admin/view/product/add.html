@@ -1,0 +1,226 @@
+{extend name="public/base" /}
+{block name='seo'}
+<title>{$title|default='页面标题'}</title>
+<meta name="keywords" content="{$keywords|default='页面关键字'}">
+<meta name="description" content="{$desc|default='页面描述'}">
+{include file="public/extend" /}
+{/block}
+{block name='content'}
+<div class="container">
+    <form class="layui-form" action="">
+<div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief">
+    <ul class="layui-tab-title">
+        <li class="layui-this">商品概述</li>
+    </ul>
+    <div class="layui-tab-item layui-show">
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">品牌</label>
+            <div class="layui-input-block">
+                <input type="text" name="brand" id="brand" required  lay-verify="required" placeholder="请输入品牌" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">商品名称</label>
+            <div class="layui-input-block">
+                <input type="text" name="name" id="name" required  lay-verify="required" placeholder="请输入名称" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item layui-form-text">
+            <label class="layui-form-label">商品简介</label>
+            <div class="layui-input-block">
+                <textarea name="introduce" id="introduce" placeholder="商品简介" class="layui-textarea"></textarea>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">选择分类</label>
+            <div class="layui-input-block">
+                <select name="category" lay-verify="required" id="category_id">
+                    {foreach name="category" item="vo"}
+                    <option value="{$vo.id}">{$vo.name}</option>
+                    {/foreach}
+                </select>
+            </div>
+        </div>
+    </div>
+</div>
+    <div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief">
+        <ul class="layui-tab-title">
+            <li class="layui-this">商品参数</li>
+        </ul>
+        <div class="layui-tab-item layui-show">
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label">型号</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="model" id="model" required  lay-verify="required" placeholder="请输入型号" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">商品颜色</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="color" id="color" required  lay-verify="required" placeholder="珠光贝母 极光色 天空之境 赤茶橘 墨玉蓝" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item layui-form-text">
+                    <label class="layui-form-label">商品运行内存</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="ram" id="ram" required  lay-verify="required" placeholder="8GB 6GB" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item layui-form-text">
+                    <label class="layui-form-label">商品存储内存</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="rom" id="rom" required  lay-verify="required" placeholder=" 6+64GB 6+128GB 8+256GB" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+            <div class="layui-form-item layui-form-text">
+                <label class="layui-form-label">CPU型号</label>
+                <div class="layui-input-block">
+                    <input type="text" name="CPU" id="CPU" required  lay-verify="required" placeholder="请输入商品CPU型号" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item layui-form-text">
+                <label class="layui-form-label">网络类型</label>
+                <div class="layui-input-block">
+                    <input type="text" name="Ka" id="Ka" required  lay-verify="required" placeholder="请输入商品网络类型" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief" id="standards">
+        <ul class="layui-tab-title">
+            <li class="layui-this">商品规格</li>
+        </ul>
+        <div class="layui-tab-item layui-show">
+            <div class="layui-form-item layui-form-text">
+                <label class="layui-form-label">颜色</label>
+                <div class="layui-input-block">
+                    <input type="text" name="colors"  required  lay-verify="required" placeholder="请输入商品颜色" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+        </div>
+        <div class="layui-tab-item layui-show">
+            <div class="layui-form-item layui-form-text">
+                <label class="layui-form-label">内存</label>
+                <div class="layui-input-block">
+                    <input type="text" name="memory"  required  lay-verify="required" placeholder="格式：4+64 请格式输入存储内存" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+        </div>
+        <div class="layui-tab-item layui-show">
+            <div class="layui-form-item layui-form-text">
+                <label class="layui-form-label">价格</label>
+                <div class="layui-input-block">
+                    <input type="text" name="prices"  required  lay-verify="required" placeholder="请输入商品价格" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+        </div>
+        <div class="layui-tab-item layui-show">
+            <div class="layui-form-item layui-form-text">
+                <label class="layui-form-label">进货量</label>
+                <div class="layui-input-block">
+                    <input type="text" name="stocks"  required  lay-verify="required" placeholder="请输入商品进货量" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+        </div>
+
+    </div>
+        <button class="layui-btn" lay-submit lay-filter="formDemo" onclick="addStandard()">增加规格</button>
+    </form>
+    <hr/>
+    <hr/>
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <button class="layui-btn" lay-submit lay-filter="formDemo" onclick="confirm()">确认提交</button>
+        </div>
+    </div>
+</div>
+{/block}
+{block name="script"}
+<script>
+    layui.use(['form'], function() {
+        var form = layui.form;
+    });
+    function addStandard(){
+        $('#standards').append('<hr/>'+' <div class="layui-tab-item layui-show">'+
+                '<div class="layui-form-item layui-form-text">'+
+                '<label class="layui-form-label">颜色</label>'+
+        '<div class="layui-input-block">'+
+        '<input type="text" name="colors"  required  lay-verify="required" placeholder="请输入商品颜色" autocomplete="off" class="layui-input">'+
+        '</div>'+
+        '</div>'+
+        ' </div>'+
+         '<div class="layui-tab-item layui-show">'+
+        ' <div class="layui-form-item layui-form-text">'+
+        ' <label class="layui-form-label">内存</label>'+
+        '<div class="layui-input-block">'+
+        ' <input type="text" name="memory"  required  lay-verify="required" placeholder="格式：4+64 请格式输入存储内存" autocomplete="off" class="layui-input">'+
+        ' </div>'+
+        ' </div>'+
+        '</div>'+
+        '<div class="layui-tab-item layui-show">'+
+        ' <div class="layui-form-item layui-form-text">'+
+        ' <label class="layui-form-label">价格</label>'+
+        ' <div class="layui-input-block">'+
+        '<input type="text" name="prices"  required  lay-verify="required" placeholder="请输入商品价格" autocomplete="off" class="layui-input">'+
+        '</div>'+
+        '</div>'+
+        '</div>'+
+        '<div class="layui-tab-item layui-show">'+
+        '<div class="layui-form-item layui-form-text">'+
+        '<label class="layui-form-label">进货量</label>'+
+        '<div class="layui-input-block">'+
+        '<input type="text" name="stocks"  required  lay-verify="required" placeholder="请输入商品进货量" autocomplete="off" class="layui-input">'+
+        '</div>'+
+        '</div>'+
+        '</div>');
+    }
+
+    function confirm(){
+        var brand=$('#brand').val();
+        var name=$('#name').val();
+        var introduce=$('#introduce').val();
+        var category_id=$('#category_id').val();
+
+        var model=$('#model').val();
+        var color=$('#color').val();
+        var ram=$('#ram').val();
+        var rom=$('#rom').val();
+        var CPU=$('#CPU').val();
+        var Ka=$('#Ka').val();
+
+        var colors=[];
+        $("input[name='colors']").each(function(){
+            colors.push($(this).val());
+        });
+
+        var memory=[];
+        $("input[name='memory']").each(function(){
+            memory.push($(this).val());
+        });
+
+        var prices=[];
+        $("input[name='prices']").each(function(){
+            prices.push($(this).val());
+        });
+
+        var stocks=[];
+        $("input[name='stocks']").each(function(){
+            stocks.push($(this).val());
+        });
+
+        $.post('http://www.shop.com/admin/product/save',{brand:brand,name:name,introduce:introduce,category_id:category_id,
+        model:model,color:color,ram:ram,rom:rom,CPU:CPU,Ka:Ka,colors:colors,memory:memory,prices:prices,stocks:stocks
+        },function(res){
+            if(res.status){
+                layer.msg(res.message,{icon:1});
+                window.location.reload();
+            }else {
+                layer.msg('添加失败',{icon:2});
+                return false;
+            }
+        })
+    }
+</script>
+{/block}

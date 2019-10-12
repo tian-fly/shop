@@ -1,0 +1,122 @@
+{extend name="public/base" /}
+{block name='seo'}
+<title>{$title|default='页面标题'}</title>
+<meta name="keywords" content="{$keywords|default='页面关键字'}">
+<meta name="description" content="{$desc|default='页面描述'}">
+
+{/block}
+
+
+{block name='content'}
+<section class="Hui-article-box">
+    <nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页
+        <span class="c-gray en">&gt;</span>
+        管理员管理
+        <span class="c-gray en">&gt;</span>
+        角色管理（权限） <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a> </nav>
+    <div class="Hui-article">
+        <article class="cl pd-20">
+            <div class="cl pd-5 bg-1 bk-gray mt-20">
+                <span class="l">  <a href="javascript:;" onclick="no_del()" class="btn btn-success radius"><i class="Hui-iconfont">&#xe6e2;</i> 批量恢复</a> <a href="javascript:;" onclick="role_edit('0')" class="btn btn-primary radius"><i class="Hui-iconfont">&#xe600;</i> 添加角色</a> </span>
+                <span class="r">共有数据：<strong>{$count}</strong> 条</span>
+            </div>
+            <table class="table table-border table-bordered table-bg">
+                <thead>
+                <tr>
+                    <th scope="col" colspan="10">学生列表</th>
+                </tr>
+
+                <tr class="text-c">
+                    <th width="40">ID</th>
+                    <th width="60">角色名</th>
+                    <th width="50">状态</th>
+                    <th width="100">操作</th>
+                </tr>
+
+                </thead>
+                <tbody>
+                {foreach name="role_list" item="rl"}
+                <tr class="text-c">
+                    <td>{$rl.id}</td>
+                    <td>{$rl.name}</td>
+                    <td class="td-status">{if condition="$rl.status=='已启用'"}<span class="label label-success radius">{$rl.status}</span>
+                        {else /}<span class="label radius">{$rl.status}</span>{/if}
+                    </td>
+                    <td class="td-manage">{if condition="$rl.status=='已启用'"}<a style="text-decoration:none" onClick="role_stop(this,'{$rl.id}')" href="javascript:;" title="停用"><i class="Hui-iconfont">&#xe631;</i></a>{else /}<a onClick="role_start(this,'{$rl.id}')" href="javascript:;" title="启用" style="text-decoration:none"><i class="Hui-iconfont">&#xe615;</i></a>{/if}<a title="编辑" href="javascript:;" onclick="role_edit('{$rl.id}')" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe6df;</i></a> <a title="删除" href="javascript:;" onclick="role_del(this,'{$rl.id}')" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe6e2;</i></a></td>
+                </tr>
+                {/foreach}
+                </tbody>
+            </table>
+        </article>
+
+    </div>
+
+</section>
+
+{/block}
+
+
+{block name="script"}
+
+
+<script type="text/javascript">
+    /*
+     参数解释：
+     title	标题
+     url		请求的url
+     id		需要操作的数据id
+     w		弹出层宽度（缺省调默认值）
+     h		弹出层高度（缺省调默认值）
+     */
+
+    function no_del(){
+        $.get("{:url('role/no_del')}");
+        layer.msg("恢复成功",{icon:1});
+        window.location.reload();
+    }
+    /*管理员-删除*/
+    function role_del(obj,id){
+        layer.confirm('确认要删除吗？',{icon:3},function(index){
+            //此处请求后台程序，下方是成功后的前台处理……
+            $.get("{:url('role/role_del')}",{id:id});
+            $(obj).parents("tr").remove();
+            layer.msg('已删除!',{icon:1,time:1000});
+        });
+    }
+    /*管理员-编辑*/
+    function role_edit(id){
+        layer.open({
+            type: 2,
+            title: id>0?'编辑角色':'添加角色',
+            shadeClose: true,
+            shade: false,
+            maxmin: true, //开启最大化最小化按钮
+            area: ['600px', '600px'],
+            content: '/admin/role/role_edit?id='+id
+        });
+    }
+    /*管理员-停用*/
+    function role_stop(obj,id){
+        layer.confirm('确认要停用吗？',{icon:3},function(index){
+            //此处请求后台程序，下方是成功后的前台处理……
+            $.get("/admin/role/role_status",{id:id});
+            $(obj).parents("tr").find(".td-manage").prepend('<a onClick="role_start(this,'+id+')" href="javascript:;" title="启用" style="text-decoration:none"><i class="Hui-iconfont">&#xe615;</i></a>');
+            $(obj).parents("tr").find(".td-status").html('<span class="label label-default radius">已停用</span>');
+            $(obj).remove();
+            layer.msg('已停用!',{icon: 5,time:1000});
+        });
+    }
+
+    /*管理员-启用*/
+    function role_start(obj,id){
+        layer.confirm('确认要启用吗？',{icon:3},function(index){
+            //此处请求后台程序，下方是成功后的前台处理……
+            $.get("/admin/role/role_status",{id:id});
+            $(obj).parents("tr").find(".td-manage").prepend('<a onClick="role_stop(this,'+id+')" href="javascript:;" title="停用" style="text-decoration:none"><i class="Hui-iconfont">&#xe631;</i></a>');
+            $(obj).parents("tr").find(".td-status").html('<span class="label label-success radius">已启用</span>');
+            $(obj).remove();
+            layer.msg('已启用!', {icon: 6,time:1000});
+        });
+    }
+</script>
+{/block}

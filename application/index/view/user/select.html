@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>地址</title>
+    {include file='public/header' /}
+    <script type="text/javascript" src="http://www.shop.com/static/city/data.js"></script>
+    <script type="text/javascript" src="http://www.shop.com/static/city/province.js"></script>
+    <script type="text/javascript">
+        var defaults = {
+            s1: 'provid',
+            s2: 'cityid',
+            s3: 'areaid',
+            v1: null,
+            v2: null,
+            v3: null
+        };
+
+    </script>
+</head>
+<body>
+<form class="layui-form" style="margin-top: 20px;">
+    <div class="layui-form-item">
+        <label class="layui-form-label" style="width: 100px;">收货人：</label>
+        <div class="layui-input-block">
+            <input type="text" name="name" placeholder="请输入收货姓名" autocomplete="off" class="layui-input" id="name">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label" style="width: 100px;">电话：</label>
+        <div class="layui-input-block">
+            <input type="text" name="mobile" placeholder="请输入电话" autocomplete="off" class="layui-input" id="mobile">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label" style="width: 100px;">选择地区</label>
+        <div class="layui-input-inline">
+            <select name="provid" id="provid" lay-filter="provid">
+                <option value="">请选择省</option>
+            </select>
+        </div>
+        <div class="layui-input-inline">
+            <select name="cityid" id="cityid" lay-filter="cityid">
+                <option value="">请选择市</option>
+            </select>
+        </div>
+        <div class="layui-input-inline">
+            <select name="areaid" id="areaid" lay-filter="areaid">
+                <option value="">请选择县/区</option>
+            </select>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label" style="width: 100px;">详细地址：</label>
+        <div class="layui-input-block">
+            <input type="text" name="detail" placeholder="请输入剩余地址信息" autocomplete="off" class="layui-input" id="detail">
+        </div>
+    </div>
+</form>
+<div class="layui-form-item">
+    <div class="layui-input-block">
+        <button class="layui-btn" onclick="confirm()">确认</button>
+    </div>
+</div>
+<script>
+    layui.use(['carousel', 'form'], function() {
+        var carousel = layui.carousel
+                , form = layui.form;
+    });
+    function confirm(){
+        var name= $.trim($('#name').val());
+        var mobile= $.trim($('#mobile').val());
+        var province=$("#provid option:selected").text();
+        var city=$("#cityid option:selected").text();
+        var zone=$("#areaid option:selected").text();
+        var detail= $.trim($('#detail').val());
+        if(!name || !mobile || !province ||!city ||!zone){
+            layer.msg('请填写全部信息',{icon:2});
+            return false;
+        }
+        $.ajax({
+            type:'post',
+            url:'http://www.shop.com/index/address/save',
+            data:{name:name,mobile:mobile,province:province,city:city,zone:zone,detail:detail},
+            dataType:'json',
+            success:function(res){
+                if(res.status){
+                    parent.layer.msg(res.message,{icon:1});
+                    parent.window.location.reload();
+                }else{
+                    layer.msg(res.message,{icon:2});
+                    return false;
+                }
+            }
+
+        });
+    }
+</script>
+</body>
+</html>

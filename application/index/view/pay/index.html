@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>确认支付</title>
+    {include file='public/header' /}
+</head>
+<body>
+<div class="container" style="margin-top: 20px;">
+    <h1 align="center" style="color: red">订单支付</h1>
+    <form class="layui-form" action="http://www.shop.com/index/pay/toPay" method=post target="_blank">
+        <input type="hidden" value="{$order.id}" name="id">
+        <div class="layui-form-item">
+            <label class="layui-form-label" style="width: 100px">商户订单号</label>
+            <div class="layui-input-block">
+                <input type="text" name="WIDout_trade_no" value="{$order.order_no}" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label" style="width: 100px">订单名称</label>
+            <div class="layui-input-block">
+                <input type="text" name="WIDsubject" value="{$order.name}" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label" style="width: 100px">付款金额</label>
+            <div class="layui-input-block">
+                <input type="text" name="WIDtotal_amount" value="{$order.total_price}" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label" style="width: 100px">商品描述</label>
+            <div class="layui-input-block">
+                <input type="text" name="WIDbody" value='{foreach name="$order.products" item="vo"}{$vo.name}:{$vo.pivot.standard_id|getStandard}x{$vo.pivot.count}/{/foreach}' class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button class="layui-btn" type="submit">付 款</button>
+                <span>如果您点击“付款”按钮，即表示您同意该次的执行操作。</span>
+            </div>
+        </div>
+    </form>
+</div>
+</body>
+</html>

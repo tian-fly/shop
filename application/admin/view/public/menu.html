@@ -1,0 +1,19 @@
+<aside class="Hui-aside">
+
+    <div class="menu_dropdown bk_2">
+        {foreach name="menu_list" item="ml" key="key"}
+        <dl id="menu-class">
+            <dt><i class="Hui-iconfont">&#xe616;</i> {$key}<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
+            <dd>
+                <ul>
+                    {volist name="ml" id="mls"}
+                    <li><a href="/admin/{$mls.controller}/{$mls.method}" title="{$mls.name}">{$mls.name}</a></li>
+                    {/volist}
+                </ul>
+            </dd>
+        </dl>
+        {/foreach}
+
+    </div>
+</aside>
+<div class="dislpayArrow hidden-xs"><a class="pngfix" href="javascript:void(0);" onClick="displaynavbar(this)"></a></div>

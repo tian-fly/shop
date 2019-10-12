@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>购物车</title>
+    {include file='public/header' /}
+    <style type="text/css">
+        input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{
+            -webkit-appearance: none;
+        }
+        input[type="number"]{
+            -moz-appearance: textfield;
+        }
+    </style>
+    <script src="http://www.shop.com/static/js/cars.js"></script>
+</head>
+<div>
+{include file="public/nav" /}
+{include file="public/nav_model" /}
+
+<div>
+<div id="bodys">
+    {if condition="count($products) gt 0"}
+<div style="float: right;font-size: large;color: red"><button class="btn btn-default" title="清空购物车" onclick="clearCar()"><img src="http://www.shop.com/image/clear.png"></button>&nbsp;&nbsp;共有5件商品</div>
+<div class="row">
+    <div class="col-md-3">
+        <img src="http://www.shop.com/image/car.jpg" style="width: 300px;height: 300px;">
+    </div >
+    <div class="col-md-9">
+
+    <table class="table">
+    <thead>
+    <tr>
+        <th><input type="checkbox" class="checkedAll" value=""></th>
+        <th>商品名称</th>
+        <th>数量/件</th>
+        <th>库存/件</th>
+        <th>规格/选择</th>
+        <th>单价</th>
+        <th>小计</th>
+        <th>用户操作</th>
+    </tr>
+    </thead>
+    <tbody>
+    {foreach name="products" item="vo"}
+    <tr id="product{$vo.index}">
+        <td><input type="checkbox" class="ids" value="{$vo.index}" name="ids[]"></td>
+        <td>{$vo.name}</td>
+        <td width="200">
+            <div class="input-group">
+                <span class="input-group-addon" onclick="reduceNum('{$vo.index}')">-</span>
+                <input type="number" class="form-control" value="{$vo.num}" name="num" id="inputNum{$vo.index}" oninput="changeNum('{$vo.index}')">
+                <span class="input-group-addon" onclick="addNum('{$vo.index}')">+</span>
+            </div>
+        </td>
+        <td><span id="stock{$vo.index}">{$vo.stock}</span></td>
+        <td>{$vo.standard}</td>
+        <td><span id="price{$vo.index}"  style="color: red">¥ {$vo.price}</span></td>
+        <td><span id="total_one_price{$vo.index}"  style="color: red">¥ {$vo.total_one_price}</span></td>
+        <td><div class="btn-group btn-group-sm" role="group" aria-label="...">
+            <button type="button" class="btn btn-default" onclick="look('{$vo.id}')"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>查看</button>
+            <button type="button" class="btn btn-default" onclick="deleteFromCar('{$vo.index}')"><span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span>删除</button>
+        </div></td>      </tr>
+    {/foreach}
+
+    </tbody>
+
+    </table>
+
+        <div>
+            <span style="color: red">总计：¥<span style="color: red" id="total_price">{$total_price}</span></span>&nbsp;&nbsp;&nbsp;<span><button type="button" class="btn btn-info" onclick="goOrder()">下单<span class="glyphicon glyphicon-share-alt" aria-hidden="true"></span></button></span>&nbsp;&nbsp;&nbsp;<span><button type="button" class="btn btn-warning" style="color: black" id="deleteAll">一键不要<span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span></button></span>
+        </div>
+        {else /}
+        <div class="row">
+            <div class="col-md-3">
+                <img src="http://www.shop.com/image/car.jpg" style="width: 300px;height: 300px;">
+            </div>
+            <div class="col-md-9">   <h1 align="center" style="position: relative;top: 50px;">购物车空空如也~~~~~~~~</h1></div>
+        </div>
+
+    </div>
+</div>
+    {/if}
+</div>
+</div>
+
+</div>
+
+<div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief">
+    <ul class="layui-tab-title">
+        <li class="layui-this">浏览过的商品</li>
+    </ul>
+    <div class="layui-tab-content">
+        <div class="layui-tab-item layui-show">
+            <div class="row">
+                {foreach name="$visitProduct" item="vo"}
+                <div class="col-sm-4 col-md-3" style="margin-left:80px;margin-top:15px;border: 1px solid blue;box-shadow: 2px 2px black;height: 400px;">
+                    <div class="thumbnail">
+                        <a style="cursor: pointer" href="http://www.shop.com/index/product/{$vo.id}"><img src="{$vo.centerImg.img_url}" alt="..." width="200" height="200"></a>
+                        <div class="caption">
+                            <h3>{$vo.name}</h3>
+                            <p>{$vo.introduce}</p>
+                            <p><a style="cursor: pointer" href="http://www.shop.com/index/product/{$vo.id}" class="btn btn-primary" role="button">&nbsp;进去看</a> </p>
+                        </div>
+                    </div>
+                </div>
+                {/foreach}
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+
+    function reduceNum(index){
+        var num= parseInt($("#inputNum"+index).val());
+        if(num>1){
+            $.get('http://www.shop.com/index/car/reduceNum',{index:index},function(res){
+                if(res.status){
+                    $("#inputNum"+index).val(num-1);
+                    $("#total_one_price"+index).text('¥'+res.total_one_price);
+                    $("#total_price").text(res.total_price);
+                }else {
+                    return false;
+                }
+            })
+        }else {
+            alert('不能少于一件');
+            return false;
+        }
+    }
+
+    function addNum(index){
+        var num= parseInt($("#inputNum"+index).val());
+        var stock=parseInt($('#stock'+index).text());
+        if(num<stock){
+            $.get('http://www.shop.com/index/car/addNum',{index:index},function(res){
+                if(res.status){
+                    $("#inputNum"+index).val(num+1);
+                    $("#total_one_price"+index).text('¥'+res.total_one_price);
+                    $("#total_price").text(res.total_price);
+                }else {
+                    return false;
+                }
+            })
+        }else {
+            alert('超过库存容量');
+            return false;
+        }
+
+    }
+
+    function changeNum(index){
+        var num= parseInt($("#inputNum"+index).val());
+        var stock=parseInt($('#stock'+index).text());
+        if(num>stock){
+            $.get('http://www.shop.com/index/car/inputNum',{index:index,num:stock},function(res){
+                if(res.status){
+                    $("#inputNum"+index).val(stock);
+                    $("#total_one_price"+index).text('¥'+res.total_one_price);
+                    $("#total_price").text(res.total_price);
+                    alert('超过库存容量');
+                }else {
+                    return false;
+                }
+            });
+        }else if (!num){
+            $.get('http://www.shop.com/index/car/inputNum',{index:index,num:1},function(res){
+                if(res.status){
+                    $("#inputNum"+index).val(1);
+                    $("#total_one_price"+index).text('¥'+res.total_one_price);
+                    $("#total_price").text(res.total_price);
+                    alert('不能少于一件');
+                }else {
+                    return false;
+                }
+            })
+        }else {
+            $.get('http://www.shop.com/index/car/inputNum',{index:index,num:num},function(res){
+                if(res.status){
+                    $("#inputNum"+index).val(num);
+                    $("#total_one_price"+index).text('¥'+res.total_one_price);
+                    $("#total_price").text(res.total_price);
+                }else {
+                    return false;
+                }
+            })
+
+        }
+
+    }
+
+    function deleteFromCar(index){
+        $.get('http://www.shop.com/index/car/delete',{index:index},function(res){
+            if(res.status){
+                $('#product'+index).remove();
+                $("#total_price").text(res.total_price);
+                layer.msg(res.message,{icon:1});
+            }else {
+                layer.msg(res.message,{icon:2});
+                return false;
+            }
+        })
+    }
+
+    function clearCar(){
+        $.get('http://www.shop.com/index/car/null',{},function(res){
+            if(res.status){
+                $('#bodys').empty();
+                $('#bodys').append('<div class="row">'+
+                        '<div class="col-md-3">'+
+                        '<img src="http://www.shop.com/image/car.jpg" style="width: 300px;height: 300px;">'+
+                        '</div>'+
+                        '<div class="col-md-9"><h1 align="center" style="position: relative;top: 50px;">购物车空空如也~~~~~~~~</h1></div></div>');
+                layer.msg(res.message,{icon:1});
+            }else {
+                layer.msg('清除失败',{icon:2});
+                return false;
+            }
+        })
+    }
+
+    function look(id){
+        window.location.href="http://www.shop.com/index/product/"+id;
+    }
+
+    function goOrder(){
+        layer.open({
+            type: 2,
+            title: '追加信息',
+            shadeClose: true,
+            shade: false,
+            maxmin: true, //开启最大化最小化按钮
+            area: ['800px', '500px'],
+            content: 'http://www.shop.com/index/order/pre'
+        });
+    }
+</script>
+</body>
+</html>

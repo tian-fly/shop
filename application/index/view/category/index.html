@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>商品分类</title>
+    {include file='public/header' /}
+</head>
+<body>
+{include file="public/nav" /}
+{include file="public/nav_model" /}
+<div class="container">
+<table class="table">
+    <tbody>
+    {foreach name="$categories" item="vo"}
+        <tr>
+            <th style="font-size: 20px;"><a style="cursor: pointer; color: red" href="http://www.shop.com/index/category/{$vo.id}" >{$vo.name}</a></th>
+            {foreach name="$vo.products" item="vos"}
+            <th><a style="cursor: pointer" href="http://www.shop.com/index/product/{$vos.id}">{$vos.name}</a></th>
+            {/foreach}
+        </tr>
+    {/foreach}
+    </tbody>
+
+</table>
+
+
+<div class="row">
+    {foreach name="$category.products" item="vo"}
+    <div class="col-sm-6 col-md-4">
+        <div class="thumbnail" style="border: 1px solid blue;box-shadow: 2px 2px black">
+            <a style="cursor: pointer" href="http://www.shop.com/index/product/{$vo.id}"><img src="{$vo.centerImg.img_url}" alt="..." ></a>
+            <div class="caption">
+                <h3>{$vo.name}</h3>
+                <p>{$vo.introduce}</p>
+                <p><a style="cursor: pointer" href="http://www.shop.com/index/product/{$vo.id}" class="btn btn-primary" role="button">&nbsp;进去看</a> </p>
+            </div>
+        </div>
+    </div>
+    {/foreach}
+</div>
+
+    <div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief">
+        <ul class="layui-tab-title">
+            <li class="layui-this">浏览过的商品</li>
+        </ul>
+        <div class="layui-tab-content">
+            <div class="layui-tab-item layui-show">
+                <div class="row">
+                    {foreach name="$visitProduct" item="vo"}
+                    <div class="col-sm-4 col-md-3" style="margin-left:80px;margin-top:15px;border: 1px solid blue;box-shadow: 2px 2px black;height: 400px;">
+                        <div class="thumbnail">
+                            <a style="cursor: pointer" href="http://www.shop.com/index/product/{$vo.id}"><img src="{$vo.centerImg.img_url}" alt="..." width="200" height="200"></a>
+                            <div class="caption">
+                                <h3>{$vo.name}</h3>
+                                <p>{$vo.introduce}</p>
+                                <p><a style="cursor: pointer" href="http://www.shop.com/index/product/{$vo.id}" class="btn btn-primary" role="button">&nbsp;进去看</a> </p>
+                            </div>
+                        </div>
+                    </div>
+                    {/foreach}
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+<script>
+    function addToCar(){
+        var num=$("input[name='num']").val();
+        var pid=$("input[name='id']").val();
+        var standard_id=$("input[name='standard_id']").val();
+        $.get('index/car/add',{id:pid,num:1,standard_id:1},function(res){
+            if(res.status){
+                layer.msg(res.message,{icon:1});
+            }else {
+                layer.msg('加入购物车失败',{icon:2});
+                return false;
+            }
+        })
+    }
+</script>
+</body>
+</html>

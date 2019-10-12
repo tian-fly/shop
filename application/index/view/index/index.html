@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>首页</title>
+    {include file='public/header' /}
+</head>
+<body>
+{include file="public/nav" /}
+<div class="layui-carousel" id="carousel">
+    <div carousel-item>
+        <div>条目1</div>
+        <div>条目2</div>
+        <div>条目3</div>
+        <div>条目4</div>
+        <div>条目5</div>
+    </div>
+</div>
+<div class="container">
+    <div align="center" style="margin-top: 10px;" >
+        <div class="input-group" style="width: 50%">
+            <input type="text" class="form-control" placeholder="输入商品内容..." id="product">
+            <span class="input-group-btn">
+             <button class="btn btn-default" type="button" onclick="search()" id="search"><span class="glyphicon glyphicon-search" aria-hidden="true"></span>&nbsp;</button>
+         </span>
+        </div>
+    </div>
+    <div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief">
+        <ul class="layui-tab-title">
+            <li class="layui-this">最热商品</li>
+            <li>最新商品</li>
+            <li role="presentation" class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false" style="text-decoration-line: none;color: black">
+                    商品分类 <span class="caret"></span>
+                </a>
+                <ul class="dropdown-menu">
+                    {foreach name="categories" item="vo"}
+                        <li><a href="http://www.shop.com/index/category/{$vo.id}">{$vo.name}</a></li>
+                    {/foreach}
+                </ul>
+
+            </li>
+        </ul>
+        <div class="layui-tab-content">
+            <div class="layui-tab-item layui-show">
+                <div class="row">
+                    {foreach name="$productsH" item="vo"}
+                    <div class="col-sm-4 col-md-3" style="margin-left:80px;margin-top:15px;border: 1px solid blue;box-shadow: 2px 2px black;height: 400px;">
+                        <div class="thumbnail">
+                            <a style="cursor: pointer" href="http://www.shop.com/index/product/{$vo.id}"><img src="{$vo.centerImg.img_url}" alt="..." width="200" height="200"></a>
+                            <div class="caption">
+                                <h3>{$vo.name}</h3>
+                                <p>{$vo.introduce}</p>
+                                <p><a style="cursor: pointer" href="http://www.shop.com/index/product/{$vo.id}" class="btn btn-primary" role="button">&nbsp;进去看</a> </p>
+                            </div>
+                        </div>
+                    </div>
+                    {/foreach}
+                </div>
+                {$productsH->render()}
+            </div>
+            <div class="layui-tab-item">
+                <div class="row">
+                    {foreach name="$productsR" item="vo"}
+                    <div class="col-sm-4 col-md-3" style="margin-left:80px;margin-top:15px;border: 1px solid blue;box-shadow: 2px 2px black;height: 400px;">
+                        <div class="thumbnail">
+                            <a style="cursor: pointer" href="http://www.shop.com/index/product/{$vo.id}"><img src="{$vo.centerImg.img_url}" alt="..." width="200" height="200"></a>
+                            <div class="caption">
+                                <h3>{$vo.name}</h3>
+                                <p>{$vo.introduce}</p>
+                                <p><a style="cursor: pointer" href="http://www.shop.com/index/product/{$vo.id}" class="btn btn-primary" role="button">&nbsp;进去看</a> </p>
+                            </div>
+                        </div>
+                    </div>
+                    {/foreach}
+                </div>
+                {$productsR->render()}
+            </div>
+        </div>
+    </div>
+{include file="public/nav_model" /}
+</div>
+
+    <script>
+        layui.use('carousel', function(){
+            var carousel = layui.carousel;
+            //建造实例
+            carousel.render({
+                elem: '#carousel'
+                ,width: '100%' //设置容器宽度
+                ,arrow: 'always' //始终显示箭头
+                ,height:'400px'
+//                ,anim: 'updown' //切换动画方式
+            });
+        });
+
+        function search(){
+            var product= $.trim($('#product').val());
+            if(!product){
+                alert('请输入查找的商品名字');
+                return false;
+            }else {
+                window.location.href="http://www.shop.com/index/product/search?product="+product;
+
+            }
+        }
+        $('#product').keydown(function(e){
+            if(e.keyCode==13){
+                $('#search').click();
+            }
+        })
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>商品详情</title>
+    {include file='public/header' /}
+</head>
+<body style="width: 700px;">
+<form class="layui-form">
+    <div class="layui-form-item">
+        <label class="layui-form-label" style="width: 100px">地&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;址:</label>
+        <div class="layui-input-block">
+            {foreach name="$address" item="vo" }
+            <input type="radio" name="address" value="{$vo.id}" title="{$vo.name}{$vo.mobile}{$vo.province}{$vo.city}{$vo.detail}" {if condition="$vo.primary eq 1"}checked{/if}>
+            {/foreach}
+        </div>
+    </div>
+    <div class="layui-form-item layui-form-text">
+        <label class="layui-form-label">备&nbsp;&nbsp;&nbsp;&nbsp;注:</label>
+        <div class="layui-input-block">
+            <textarea name="desc" placeholder="请输入内容" class="layui-textarea" id="remark">2333</textarea>
+        </div>
+    </div>
+
+</form>
+<div class="layui-form-item">
+    <div class="layui-input-block">
+        <button class="layui-btn" onclick="toOrder()">确认</button>
+    </div>
+</div>
+<script>
+    layui.use(['carousel', 'form'], function() {
+        var carousel = layui.carousel
+                , form = layui.form;
+    });
+   function toOrder(){
+       var address=$("input[name='address']:checked").val();
+       var remark=$('#remark').val();
+       $.post('http://www.shop.com/index/order/toOrder',{address:address,remark:remark},function(res){
+            if(res.status){
+                parent.layer.msg(res.message,{icon:1});
+                parent.window.location.href="http://www.shop.com/index/order";
+            }else {
+                parent.layer.msg(res.message,{icon:2});
+                return false;
+            }
+        });
+    }
+</script>
+</body>
+</html>

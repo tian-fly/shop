@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    {include file="public/header" /}
+</head>
+<body >
+    <form class="layui-form" action="" style="width: 550px;">
+        <div class="layui-form-item">
+            <label class="layui-form-label">用户名</label>
+            <div class="layui-input-block">
+                <input type="text" name="user_name"  id="user_name" autocomplete="off" placeholder="请输入用户名" class="layui-input" value='{$Think.cookie.userForm}'>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">密&nbsp;&nbsp;&nbsp;&nbsp;码</label>
+            <div class="layui-input-block">
+                <input type="text" name="password"  autocomplete="off" placeholder="请输入密码" class="layui-input">
+            </div>
+        </div>
+        <a onclick="cBackPassword()" style="float: right;margin-top: -15px;cursor: pointer">忘记密码？</a>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">验证码</label>
+            <div class="layui-input-block">
+                <input type="text" name="code" id="code"  autocomplete="off" placeholder="请输入验证码" class="layui-input" style="width: 150px;">
+                <img src="{:url('captcha')}" id="captcha" style="height: 38px;margin-top: -63px;margin-left: 160px;width: 125px;cursor: pointer;border: 1px solid black" onclick="this.src=this.src+'?'+Math.random();">
+            </div>
+
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label"></label>
+            <div class="layui-input-block">
+                <input type="checkbox" name="saveForm" checked="checked" value="yes">是否记住用户名和密码?
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button class="layui-btn" type="button" id="login">立即登入</button>
+                <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+            </div>
+        </div>
+
+
+    </form>
+
+    <!-- Modal -->
+    <div class="modal fade " id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">注册用户</h4>
+                </div>
+                <div class="modal-body">
+                    <iframe src="start_register" frameborder="0" scrolling="no"  style="height: 850px;width: 100%" ></iframe>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+<script>
+    layui.use(['form'], function() {
+        var form = layui.form;
+    });
+</script>
+<script>
+    $(function(){
+
+        $('#login').click(function(){
+            var user_name=$("input[name='user_name']").val();
+            if(!user_name){
+                layer.msg('用户名不能为空哦',{icon:2});
+                return false;
+            }
+            var password=$("input[name='password']").val();
+            if(!password){
+                layer.msg('密码不能为空哦',{icon:2});
+                return false;
+            }
+            var code=$("input[name='code']").val();
+            if(!code){
+                layer.msg('验证码不能为空哦',{icon:2});
+                return false;
+            }
+            var saveForm=$("input[name='saveForm']:checked").val();
+            if(!saveForm){
+                saveForm="no";
+            }
+            $.post('login',{user_name:user_name,password:password,code:code,saveForm:saveForm},function(res){
+                if(res.status==1){
+                    layer.msg(res.message,{icon:1});
+                    parent.window.location.reload();
+                }else {
+                    $('#captcha').click();
+                    layer.msg(res.message,{icon:2});
+                    return false;
+                }
+            },'json')
+        });
+        $('input').keydown(function(e){
+            if(e.keyCode==13){
+                $('#login').click();
+            }
+        });
+
+    })
+</script>
+<script>
+    function cBackPassword(){
+        parent.layer.open({
+            type: 2,
+            title: '找回密码',
+            shadeClose: true,
+            shade: false,
+//            maxmin: true, //开启最大化最小化按钮
+            area: ['540px', '350px'],
+            content: '/home/mail/cBackPassword'
+        });
+    }
+</script>
+</html>

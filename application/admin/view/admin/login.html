@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>登入</title>
+    <link rel="stylesheet" href="__STATIC__/css/bootstrap.min.css" type="text/css">
+    <link rel="stylesheet" href="__STATIC__/css/login.css" type="text/css">
+    <script src="__STATIC__/js/jquery-3.4.1.min.js"></script>
+    <script type="text/javascript" src="__STATIC__/layer/layer.js"></script>
+    <script type="text/javascript" src="__STATIC__/js/bootstrap.min.js"></script>
+</head>
+<body style="background-color: #00a0e9">
+<div class="container">
+    <div class="jumbotron">
+        <h3>手机销售后台管理系统&nbsp;&nbsp;<small>登入</small></h3>
+
+    </div>
+
+    <form class="form-horizontal" >
+        <hr/>
+        <div class="form-group">
+
+            <label for="username" class="col-sm-2 control-label">用户名</label>
+            <div class="col-sm-5">
+                <input type="text" class="form-control" id="username" placeholder="用户名" name="username" autofocus/>
+                <span class=" glyphicon glyphicon-user form-control-feedback" aria-hidden="true"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="password" class="col-sm-2 control-label">密&nbsp;&nbsp;码</label>
+            <div class="col-sm-5">
+                <input type="password" class="form-control" id="password" placeholder="密码" name="password">
+                <span class=" glyphicon glyphicon-lock form-control-feedback" aria-hidden="true"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="code" class="col-sm-2 control-label">验证码</label>
+            <div class="col-sm-2">
+                <input type="text" class="form-control" id="code" placeholder="验证码" name="code">
+            </div>
+            <div class="col-sm-3">
+                <img src="http://www.shop.com/captcha" onclick="this.src=this.src+'?'+Math.random()" class="codeImg">
+            </div>
+        </div>
+
+    </form>
+    <button type="button" id="btn" class="btn btn-success col-sm-offset-1 ">登入</button>
+</div>
+<script type="text/javascript">
+    $('#btn').click(function(){
+        var username=$('#username').val();
+        var password=$('#password').val();
+        var code=$('#code').val();
+        if(!username){
+            layer.msg('用户名不能为空！',{icon:2});
+            return false;}
+        if(!password){
+            layer.msg('密码不能为空！',{icon:2});
+            return false;
+        }
+        if(!code){
+            layer.msg('验证码不能为空！',{icon:2});
+            return false;
+        }
+        $.ajax({
+            type:'post',
+            url:"{:url('admin/checkLogin')}",
+            data:$('form').serialize(),
+            dataType:"json",
+            success:function(res){
+                if(res.status){
+                    layer.msg(res.message,{icon:1},function(){
+                        window.location.href="{:url('index/index')}";
+                    })
+                }else {
+                    $('.codeImg').click();
+                    layer.msg(res.message,{icon:2});
+                }
+            }
+        });
+    });
+    $('input').keydown(function(e){
+        if(e.keyCode==13){
+            $('#btn').click();
+        }
+    })
+</script>
+</body>
+</html>

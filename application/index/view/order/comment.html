@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    {include file='public/header' /}
+</head>
+<body>
+<form class="layui-form" action="" style="margin-top:50px;">
+    <div class="layui-form-item layui-form-text">
+        <label class="layui-form-label">评论内容</label>
+        <div class="layui-input-block">
+            <textarea name="content" id="content" placeholder="商品简介" class="layui-textarea"></textarea>
+        </div>
+    </div>
+    <input type="hidden" id="standard_id" value="{$_GET['standard_id']}">
+    <input type="hidden" id="count" value="{$_GET['count']}">
+    <input type="hidden" id="id" value="{$_GET['id']}">
+    <input type="hidden" id="order_no" value="{$_GET['order_no']}">
+</form>
+<div class="layui-form-item">
+    <div class="layui-input-block">
+        <button class="layui-btn" lay-submit lay-filter="formDemo" onclick="confirm()">确认提交</button>
+    </div>
+</div>
+<script>
+    function confirm(){
+        var content=$('#content').val();
+        if(!content){
+            layer.msg('请输入评论的内容',{icon:2});
+            return false;
+        }
+        var standard_id=$('#standard_id').val();
+        var count=$('#count').val();
+        var id=$('#id').val();
+        var order_no=$('#order_no').val();
+        $.post('http://www.shop.com/index/order/send',{content:content,standard_id:standard_id,count:count,id:id,order_no:order_no},function(res){
+            if(res.status){
+                layer.msg(res.message,{icon:1});
+                parent.window.location.reload();
+
+            }else {
+                layer.msg(res.message,{icon:2});
+                return false;
+            }
+        })
+    }
+</script>
+</body>
+</html>

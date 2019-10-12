@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    {include file="public/header" /}
+</head>
+<body>
+<form class="layui-form" action="" style="width: 550px;">
+    <input type="hidden" value="{$_GET['user_name']}" name="user_name" id="user_name">
+    <input type="hidden" value="{$_GET['email']}" name="email" id="email">
+    <div class="layui-form-item">
+        <label class="layui-form-label">验证码</label>
+        <div class="layui-input-block">
+            <input type="text" name="code"  id="code" autocomplete="off" placeholder="请输入邮箱中的验证码" class="layui-input">
+            <!--<button class="layui-btn" type="button" onclick="reSendEmail()">收不到，重发</button>-->
+            <button type="button" class="btn btn-success " id="time" onclick="reSendEmail()"></button>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <button class="layui-btn" type="button" id="checkCode">验证</button>
+            <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+        </div>
+    </div>
+</form>
+<script>
+    var i=60;
+    function time() {
+        if (i == 0) {
+            $('#time').attr("disabled", false);
+            $('#time').text('收不到，点击重发');
+            i = 5;
+            return false;
+        } else {
+            $('#time').attr("disabled", "disabled");
+            $('#time').text("重发" + i);
+            i = i - 1;
+            setTimeout(function(){
+                time();
+            },1000)
+        }
+    }
+    time();
+</script>
+<script>
+
+    $('#checkCode').click(function(){
+        $user_name=$('#user_name').val();
+        $email=$('#email').val();
+
+        $.post('/home/mail/checkedCode',$('form').serialize(),function(res){
+            if(res.status==1){
+                window.location.href="/home/mail/newPassword?user_name="+$user_name+"&email="+$email;
+            }else{
+                layer.msg(res.message,{icon:2})
+            }
+        })
+    });
+
+    function reSendEmail(){
+        $user_name=$('#user_name').val();
+        $email=$('#email').val();
+        $.get('/home/mail/sendEmail',{user_name:$user_name,email:$email},function(){
+            alert('请前往邮箱查收...');
+        });
+    }
+</script>
+</body>
+</html>

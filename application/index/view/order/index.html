@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>订单</title>
+    {include file='public/header' /}
+    <script src="http://www.shop.com/static/js/orders.js"></script>
+</head>
+<body>
+{include file="public/nav" /}
+{include file="public/nav_model" /}
+<div class="container">
+    {if condition="count($ordersN) lt 0"}
+<div style="float: right;color: red"><button class="btn btn-default" title="删除所有订单" onclick="clearOrders()"><img src="http://www.shop.com/image/clear.png"></button>&nbsp;&nbsp;共有5张订单</div>
+{/if}
+    <div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief">
+    <ul class="layui-tab-title">
+        <li class="layui-this">未处理的订单</li>
+        <li>已处理的订单</li>
+    </ul>
+    <div class="layui-tab-content">
+        <div class="layui-tab-item layui-show">
+            {if condition="count($ordersN) gt 0"}
+        <table class="table">
+            <thead>
+             <tr>
+                 <th><input type="checkbox" class="checkedAll" value=""></th>
+                 <th>订单号</th>
+                 <th>商品名称</th>
+                 <th>数量/件</th>
+                 <th>备注</th>
+                 <th>小计</th>
+                 <th>收货人姓名</th>
+                 <th>收货人电话</th>
+                 <th>收货人地址</th>
+                 <th>状态</th>
+                 <th>用户操作</th>
+             </tr>
+            </thead>
+            <tbody>
+            {foreach name="$ordersN" item="vo"}
+            <tr id="order{$vo.id}">
+                <td><input type="checkbox" class="ids" value="{$vo.id}" name="ids[]"></td>
+                <td>{$vo.order_no}</td>
+                <td>
+                    {foreach name="$vo.products" item="vos"}
+                       {$vos.name}/
+                    {/foreach}
+                    ...
+                </td>
+                <td>{$vo.count}</td>
+                <td>{$vo.remark|substr=0,10}...</td>
+                <td style="color: red">¥{$vo.total_price}</td>
+                <td>{$vo.pre_name}</td>
+                <td>{$vo.pre_phone}</td>
+                <td>{$vo.pre_address|substr=0,15}...</td>
+                <td style="color: red">{if condition="$vo.status eq 0"}未支付{elseif condition="$vo.status eq 1" /}已支付{elseif condition="$vo.status eq 2"/}已发货{else /}交易成功{/if}</td>
+                <td><div class="btn-group btn-group-sm" role="group" aria-label="...">
+                    <button type="button" class="btn btn-info" onclick="pay('{$vo.id}')">支付<span class="glyphicon glyphicon-share-alt" aria-hidden="true"></span></button>
+                    <button type="button" class="btn btn-success" onclick="look('{$vo.id}')"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>查看</button>
+                    <button type="button" class="btn btn-danger" onclick="deleteOrder('{$vo.id}')"><span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span>删除</button>
+                </div></td>            </tr>
+            {/foreach}
+            </tbody>
+
+        </table>
+            <button type="button" class="btn btn-danger" id="deleteAll"><span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span>一键删除</button>
+            {else /}
+            <p align="center">暂时没有订单呦。。。</p>
+            {/if}
+            </div>
+        <div class="layui-tab-item">
+            {if condition="count($ordersD) gt 0"}
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>订单号</th>
+                    <th>商品名称</th>
+                    <th>数量/件</th>
+                    <th>备注</th>
+                    <th>小计</th>
+                    <th>收货人姓名</th>
+                    <th>收货人电话</th>
+                    <th>收货人地址</th>
+                    <th>状态</th>
+                    <th>用户操作</th>
+                </tr>
+                </thead>
+                <tbody>
+
+                {foreach name="$ordersD" item="vo"}
+                <tr >
+                    <td>{$vo.order_no}</td>
+                    <td>
+                        {foreach name="$vo.products" item="vos"}
+                        {$vos.name}/
+                        {/foreach}
+                        ...
+                    </td>
+                    <td>{$vo.count}</td>
+                    <td>{$vo.remark|substr=0,10}...</td>
+                    <td style="color: red">¥{$vo.total_price}</td>
+                    <td>{$vo.pre_name}</td>
+                    <td>{$vo.pre_phone}</td>
+                    <td>{$vo.pre_address|substr=0,15}...</td>
+                    <td style="color: red">{if condition="$vo.status eq 0"}未支付{elseif condition="$vo.status eq 1" /}已支付{elseif condition="$vo.status eq 2"/}已发货{else /}交易成功{/if}</td>
+                    <td><div class="btn-group btn-group-sm" role="group" aria-label="...">
+                        <button type="button" class="btn btn-default" onclick="look('{$vo.id}')"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>查看</button>
+                        <button type="button" class="btn btn-default"><span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span>删除</button>
+                    </div></td>            </tr>
+                {/foreach}
+
+                </tbody>
+
+            </table>
+            {else /}
+            <p align="center">暂时没有订单呦。。。</p>
+            {/if}
+        </div>
+    </div>
+</div>
+    <div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief">
+        <ul class="layui-tab-title">
+            <li class="layui-this">浏览过的商品</li>
+        </ul>
+        <div class="layui-tab-content">
+            <div class="layui-tab-item layui-show">
+                <div class="row">
+                    {foreach name="$visitProduct" item="vo"}
+                    <div class="col-sm-4 col-md-3" style="margin-left:80px;margin-top:15px;border: 1px solid blue;box-shadow: 2px 2px black;height: 400px;">
+                        <div class="thumbnail">
+                            <a style="cursor: pointer" href="http://www.shop.com/index/product/{$vo.id}"><img src="{$vo.centerImg.img_url}" alt="..." width="200" height="200"></a>
+                            <div class="caption">
+                                <h3>{$vo.name}</h3>
+                                <p>{$vo.introduce}</p>
+                                <p><a style="cursor: pointer" href="http://www.shop.com/index/product/{$vo.id}" class="btn btn-primary" role="button">&nbsp;进去看</a> </p>
+                            </div>
+                        </div>
+                    </div>
+                    {/foreach}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+
+    function look(id){
+        window.location.href="http://www.shop.com/index/order/look?id="+id;
+    }
+
+    function pay(id){
+        window.location.href="http://www.shop.com/index/pay?id="+id;
+    }
+
+    function deleteOrder(oid){
+        $.ajax({
+            type:'delete',
+            url:'http://www.shop.com/index/order/delete',
+            data:{oid:oid},
+            dataType:'json',
+            success:function(res){
+                if(res.status){
+                    $('#order'+oid).remove();
+                    layer.msg(res.message,{icon:1});
+                }else{
+                    layer.msg(res.message,{icon:2});
+                    return false;
+                }
+            }
+
+        });
+
+    }
+</script>
+</body>
+</html>

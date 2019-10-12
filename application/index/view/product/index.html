@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>商品详情</title>
+    {include file='public/header' /}
+    <style type="text/css">
+      .top{
+          border: 1px solid black;
+          padding: 5px 5px;
+      }
+        input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{
+            -webkit-appearance: none;
+        }
+        input[type="number"]{
+            -moz-appearance: textfield;
+        }
+    </style>
+</head>
+<body>
+{include file="public/nav" /}
+{include file="public/nav_model" /}
+<div class="container">
+    <div class="row">
+        <div class="col-md-4 col-sm-6">
+            <img src="{$productDetail.standards[0]['center_img']['img_url']}" style="width:360px;height: 400px;" id="image">
+        </div>
+        <div class="col-md-8 col-sm-6">
+            <form class="layui-form">
+                <input type="hidden" name="id" value="{$productDetail.id}">
+                <input type="hidden" name="standard_id" value="{$productDetail.standards[0]['id']}">
+            <div class="page-header">
+                <h1>{$productDetail.brand}<small>{$productDetail.introduce}&nbsp;&nbsp;<span style="color: red" >¥ <span id="price">{$productDetail.standards[0]['price']}</span></span><span style="font-size: 10px;color: red;float: right;position: relative;top: 10px;">总销量：{$productDetail.sell}件</span></small></h1>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label" style="width: 100px">网络类型</label>
+                <div class="layui-input-block">
+                    <input type="radio" name="network" value="男" title="4G全网通" checked>
+                </div>
+            </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label" style="width: 100px">颜&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;色</label>
+                    <div class="layui-input-block">
+                        {foreach name="$productDetail.color" item="vo" key="key"}
+                        <input type="radio" name="color" value="{$vo}" title="{$vo}" lay-filter="color" {if condition="$key eq 0"}checked{/if}>
+                        {/foreach}
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label" style="width: 100px">存储容量</label>
+                    <div class="layui-input-block">
+                        {foreach name="$productDetail.memory" item="vo"  key="key"}
+                        <input type="radio" name="memory" value="{$vo}" title="{$vo}" lay-filter="memory" {if condition="$key eq 0"}checked{/if}>
+                        {/foreach}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="layui-form-item">
+                            <label class="layui-form-label" style="width: 100px">数&nbsp;&nbsp;量/件</label>
+                            <div class="layui-input-block">
+                                <div class="input-group">
+                                    <span class="input-group-addon" onclick="reduceNum()">-</span>
+                                    <input type="number" class="form-control" value="1" name="num" id="inputNum">
+                                    <span class="input-group-addon" onclick="addNum()">+</span>
+                                </div>
+                                <span>库存：<span style="color: red" id="stock">{$productDetail.standards[0]['stock']}</span>件</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-7 col-md-offset-1">
+                        小计：<span style="color: red;font-size: 20px;" >¥ <span id="totalPrice">5488.00</span></span>
+                    </div>
+                </div>
+
+            </form>
+            <div class="row">
+                <div class="col-md-6">
+                    <button type="button" class="btn btn-danger" style="width: 100%" onclick="addToCar()">加入购物车</button>
+                </div>
+                <div class="col-md-6">
+                    <button type="button" class="btn btn-info" style="width: 100%">立即购买</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief">
+        <ul class="layui-tab-title">
+            <li class="layui-this">商品详情</li>
+            <li>商品评论</li>
+            <li>服务条款</li>
+        </ul>
+        <div class="layui-tab-content">
+            <div class="layui-tab-item layui-show">
+                <div class="top">
+                    品牌名称：{$productDetail.brand}<br/><br/>
+                    <span style="font-size: 20px;">产品参数</span>：<br/><br/>
+                    <div class="row">
+                        <div class="col-md-3 col-sm-6"> 产品名称：{$productDetail.name}</div>
+                        <div class="col-md-3 col-sm-6">型号: {$productDetail.param.model}</div>
+                        <div class="col-md-3 col-sm-6">机身颜色: {$productDetail.param.color}</div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-3 col-sm-6"> 运行内存RAM:{$productDetail.param.ram}</div>
+                        <div class="col-md-3 col-sm-6">存储容量: {$productDetail.param.rom}</div>
+                        <div class="col-md-3 col-sm-6">CPU型号: {$productDetail.param.CPU}</div>
+                    </div>
+                    网络模式: {$productDetail.param.Ka}
+                </div>
+                <h2>产品详情</h2>
+                <hr/>
+                {foreach name="$productDetail.images" item="vo"}
+                    <img src="{$vo.image.img_url}">
+                {/foreach}
+            </div>
+            <div class="layui-tab-item">
+
+                <div class="layui-row">
+                    <div class="layui-col-md1"><img src="http://www.shop.com/image/car.jpg" class="layui-nav-img"></div>
+                    <div class="layui-col-md1" style="position: relative;top:5px;">匿名</div>
+                    <div class="layui-col-md2">2018&nbsp;&nbsp;<span style="font-size: 20px;">:</span></div>
+                    <div class="layui-col-md8" style="position: relative;top:5px;">选择类型： 8+128GB 珠光贝母</div>
+                </div>
+                <br/>
+                <div>
+                    666666666666666666666
+                </div>
+                <hr/>
+            </div>
+            <div class="layui-tab-item">
+               七天无理由包退
+                十五天包换
+                一年免费保修
+            </div>
+        </div>
+    </div>
+    <div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief">
+        <ul class="layui-tab-title">
+            <li class="layui-this">浏览过的商品</li>
+        </ul>
+        <div class="layui-tab-content">
+            <div class="layui-tab-item layui-show">
+                <div class="row">
+                    {foreach name="$visitProduct" item="vo"}
+                    <div class="col-sm-4 col-md-3" style="margin-left:80px;margin-top:15px;border: 1px solid blue;box-shadow: 2px 2px black;height: 400px;">
+                        <div class="thumbnail">
+                            <a style="cursor: pointer" href="http://www.shop.com/index/product/{$vo.id}"><img src="{$vo.centerImg.img_url}" alt="..." width="200" height="200"></a>
+                            <div class="caption">
+                                <h3>{$vo.name}</h3>
+                                <p>{$vo.introduce}</p>
+                                <p><a style="cursor: pointer" href="http://www.shop.com/index/product/{$vo.id}" class="btn btn-primary" role="button">&nbsp;进去看</a> </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-4 col-md-3" style="margin-left:80px;margin-top:15px;border: 1px solid blue;box-shadow: 2px 2px black;height: 400px;">
+                        <div class="thumbnail">
+                            <a style="cursor: pointer" href="http://www.shop.com/index/product/{$vo.id}"><img src="{$vo.centerImg.img_url}" alt="..." width="200" height="200"></a>
+                            <div class="caption">
+                                <h3>{$vo.name}</h3>
+                                <p>{$vo.introduce}</p>
+                                <p><a style="cursor: pointer" href="http://www.shop.com/index/product/{$vo.id}" class="btn btn-primary" role="button">&nbsp;进去看</a> </p>
+                            </div>
+                        </div>
+                    </div>
+                    {/foreach}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    layui.use(['form'], function(){
+        var form = layui.form;
+
+        form.on("radio(color)",function(data){
+            var pid=$("input[name='id']").val();
+            var memory=$("input[name='memory']:checked").val();
+            $.get('http://www.shop.com/index/product/productPicture',{color:data.value,pid:pid,memory:memory},function(res){
+                if(res.status){
+                    $('#image').attr('src',res.message);
+                    $("input[name='standard_id']").val(res.sid);
+                }else {
+                    return false;
+                }
+            })
+        });
+
+        form.on("radio(memory)",function(data){
+            var pid=$("input[name='id']").val();
+            var color=$("input[name='color']:checked").val();
+            $.get('http://www.shop.com/index/product/productPrice',{memory:data.value,pid:pid,color:color},function(res){
+                if(res.status){
+                    $('#price').text(res.price);
+                    $('#totalPrice').text(res.price);
+                    $('#stock').text(res.stock);
+                    $("input[name='standard_id']").val(res.sid);
+                }else {
+                    return false;
+                }
+            })
+        });
+
+
+
+
+    });
+</script>
+
+<script>
+   function reduceNum(){
+        var num= parseInt($("input[name='num']").val());
+        var pid=$("input[name='id']").val();
+        if(num>1){
+            $("input[name='num']").val(num-1);
+            var numAfter= parseInt($("input[name='num']").val());
+            var price=parseInt($('#price').text());
+            var totalPrice=price*numAfter;
+            $('#totalPrice').text(totalPrice);
+        }else {
+            alert('不能少于一件');
+            return false;
+        }
+    }
+
+    function addNum(){
+        var num= parseInt($("input[name='num']").val());
+        var stock=parseInt($('#stock').text());
+        if(num<stock){
+            $("input[name='num']").val(num+1);
+            var numAfter= parseInt($("input[name='num']").val());
+            var price=parseInt($('#price').text());
+            var totalPrice=price*numAfter;
+            $('#totalPrice').text(totalPrice);
+        }else {
+            alert('超过库存容量');
+            return false;
+        }
+
+    }
+
+    $('#inputNum').bind('input propertychange',function(){
+        var num= parseInt($("input[name='num']").val());
+        var stock=parseInt($('#stock').text());
+        if(num>stock){
+            $("input[name='num']").val(stock);
+        }
+        if(!num){
+            $("input[name='num']").val(1);
+        }
+        var numAfter= parseInt($("input[name='num']").val());
+       var price=parseInt($('#price').text());
+        var totalPrice=price*numAfter;
+        $('#totalPrice').text(totalPrice);
+
+    });
+
+    function addToCar(){
+        var num=$("input[name='num']").val();
+        var pid=$("input[name='id']").val();
+        var standard_id=$("input[name='standard_id']").val();
+        $.get('http://www.shop.com/index/car/add',{id:pid,num:num,standard_id:standard_id},function(res){
+            if(res.status){
+                layer.msg(res.message,{icon:1});
+            }else {
+                layer.msg('加入购物车失败',{icon:2});
+                return false;
+            }
+        })
+    }
+
+
+</script>
+</body>
+</html>

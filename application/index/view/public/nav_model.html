@@ -1,0 +1,136 @@
+<!-- 注册Modal -->
+<div class="modal fade " id="myModal1" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel1">注册用户</h4>
+            </div>
+            <div class="modal-body">
+                <iframe src="http://www.shop.com/start_register" frameborder="0" scrolling="no"  style="height: 400px;width: 800px;" ></iframe>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal" >关闭</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 登入Modal -->
+<div class="modal fade " id="myModal2" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel2">用户登入</h4>
+            </div>
+            <div class="modal-body">
+                <iframe src="http://www.shop.com/start_login" frameborder="0" scrolling="no"  style="height: 285px;width: 550px;" ></iframe>
+                <br/>
+                <a style="cursor: pointer;float: right;" data-toggle="modal" data-target="#myModal" onclick="register()">无账号，马上注册>>></a>
+                <br/>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal" id="loginClose">关闭</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- 反馈Modal -->
+<div class="modal fade " id="myModal3" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel3">用户反馈</h4>
+            </div>
+            <div class="modal-body">
+                <iframe src="http://www.shop.com/start_feedback" frameborder="0" scrolling="no"  style="height: 285px;width: 550px;" ></iframe>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal" >关闭</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    function  logout(){
+        $.post('http://www.shop.com/logout',{},function(res){
+            if(res.status){
+                layer.msg(res.message, {icon: 1},function(){
+                    window.location.reload();
+                });
+
+            }else {
+                layer.msg(res.message,{icon:2});
+            }
+
+        },'json');
+
+    }
+
+    function personal(){
+        $.get('http://www.shop.com/personal',{},function(res){
+            if(res.status==0){
+                layer.msg(res.message,{icon:2});
+                return false;
+            }else {
+                window.location.href='personal';
+            }
+        })
+    }
+
+    function message(){
+        $.get('http://www.shop.com/message',{},function(res){
+            if(res.status==0){
+                layer.msg(res.message,{icon:2});
+                return false;
+            }else {
+                window.location.href='message';
+            }
+        })
+    }
+
+    function register(){
+        $('#loginClose').click();
+        setTimeout(function(){
+            $('#register').click();
+        },1200);
+
+
+    }
+
+    layui.use('element', function(){
+        var element = layui.element; //导航的hover效果、二级菜单等功能，需要依赖element模块
+
+        //监听导航点击
+        element.on('nav(demo)', function(elem){
+            //console.log(elem)
+            layer.msg(elem.text());
+        });
+    });
+</script>
+<script>
+    layui.use(['carousel', 'form'], function() {
+        var carousel = layui.carousel
+                , form = layui.form;
+
+
+        //改变下时间间隔、动画类型、高度
+        carousel.render({
+            elem: '#test2'
+            , interval: 2500
+            , anim: 'fade'
+            ,width:'900px'
+            , height: '300px'
+        });
+    })
+</script>
+
+
+
+

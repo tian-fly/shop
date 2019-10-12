@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>个人中心</title>
+    {include file='public/header' /}
+</head>
+<body>
+{include file="public/nav" /}
+{include file="public/nav_model" /}
+<div class="container">
+    <div class="jumbotron">
+        <h1>Hello, {$user.user_name}!</h1>
+        <p>欢迎光临本站。。。</p>
+        <p><a class="btn btn-primary btn-lg" href="#" role="button">前往购物中心<span class="glyphicon glyphicon-share-alt" aria-hidden="true"></span></a></p>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6 col-sm-12" >
+            <div align="center" style="cursor: pointer;" onclick="car()" >
+                <div style="width: 80%;border: 1px solid black;background-color: #c6c6c6;border-radius: 5px;" >
+                    <p style="margin-top: 5px;"><span class="glyphicon glyphicon-shopping-cart" aria-hidden="true" style="font-size: 50px;"></span></p>
+                    <h1 >购物车</h1>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 col-sm-12" style="cursor: pointer;" onclick="order()">
+            <div align="center">
+                <div style="width: 80%;border: 1px solid black;border-radius: 5px;background-color: #c6c6c6" >
+                    <p style="margin-top: 5px;"><span class="glyphicon glyphicon-list-alt" aria-hidden="true" style="font-size: 50px;"></span></p>
+                    <h1 >我的订单</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row" style="margin-top: 10px;">
+        <div class="col-md-6 col-sm-12" style="cursor: pointer;" onclick="address()">
+            <div align="center">
+                <div style="width: 80%;border: 1px solid black;border-radius: 5px;background-color: #c6c6c6" >
+                    <p style="margin-top: 5px;"><span class="glyphicon glyphicon-list-alt" aria-hidden="true" style="font-size: 50px;"></span></p>
+                    <h1 >我的收货地址</h1>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 col-sm-12">
+            <div align="center" style="cursor: pointer;" id="messages">
+                <div style="width: 80%;border: 1px solid black;border-radius: 5px;background-color: #c6c6c6" >
+                    <p style="margin-top: 5px;"><span class="glyphicon glyphicon-envelope" aria-hidden="true" style="font-size: 50px;"></span></p>
+                    <h1 >我的消息</h1>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <div class="row" style="margin-top: 10px;">
+        <div class="col-md-6 col-sm-12" >
+            <div align="center" style="cursor: pointer;;">
+                <div style="width: 80%;border: 1px solid black;border-radius: 5px;background-color: #c6c6c6" >
+                    <p style="margin-top: 5px;"><span class="glyphicon glyphicon-refresh" aria-hidden="true" style="font-size: 50px;"></span></p>
+                    <h1 >正在研发...</h1>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+<script>
+    var i=1;
+    function inform(){
+        if(i>0){
+            $.get('http://www.shop.com/informs',{},function(res){
+                if(res.status){
+                    $('#message').empty();
+                    $('#message').text(res.message);
+                }else {
+                    $('#message').text(0);
+                    return false;
+                }
+            });
+
+            setTimeout(function(){
+                inform();
+            },300000000);
+        }
+
+
+    }
+    inform();
+
+    $('#link').click(function(){
+        layer.tips('本网站由个人开发纯粹用于娱乐项目 禁止用于商用 ^o^', '#link',{
+            tips: [1, 'black'],
+            time: 4000
+        });
+    });
+
+    function car(){
+        $.get('http://www.shop.com/index/car',{},function(res){
+            if(res.status==0){
+                layer.msg(res.message,{icon:2});
+                return false;
+            }else {
+                window.location.href='http://www.shop.com/index/car';
+            }
+        },'json')
+    }
+
+    function order(){
+        $.get('http://www.shop.com/index/order',{},function(res){
+            if(res.status==0){
+                layer.msg(res.message,{icon:2});
+                return false;
+            }else {
+                window.location.href='http://www.shop.com/index/order';
+            }
+        },'json')
+    }
+
+    $('#personal').click(function(){
+        $.get('http://www.shop.com/index/personal',{},function(res){
+            if(res.status==0){
+                layer.msg(res.message,{icon:2});
+                return false;
+            }else {
+                window.location.href='http://www.shop.com/index/personal';
+            }
+        },'json')
+    });
+
+    $('#messages').click(function(){
+        $.get('http://www.shop.com/index/message',{},function(res){
+            if(res.status==0){
+                layer.msg(res.message,{icon:2});
+                return false;
+            }else {
+                window.location.href='http://www.shop.com/index/message';
+            }
+        },'json')
+    })
+
+    function address(){
+        $.get('http://www.shop.com/index/address',{},function(res){
+            if(res.status==0){
+                layer.msg(res.message,{icon:2});
+                return false;
+            }else {
+                window.location.href='http://www.shop.com/index/address';
+            }
+        },'json')
+    }
+</script>
+</body>
+</html>

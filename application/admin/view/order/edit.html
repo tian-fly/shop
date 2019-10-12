@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    {include file="public/extend" /}
+</head>
+<body style="width: 500px;">
+<form class="layui-form">
+    <input type="hidden" id="id" value="{$order.id}">
+    <div class="layui-form-item">
+        <label class="layui-form-label" style="width: 100px">状&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;态</label>
+        <div class="layui-input-block">
+            <input type="radio" name="status" value="0" title="未支付" {if condition="$order.status eq 0"}checked{/if}>
+            <input type="radio" name="status" value="1" title="已支付" {if condition="$order.status eq 1"}checked{/if}>
+            <input type="radio" name="status" value="2" title="已发货" {if condition="$order.status eq 2"}checked{/if}>
+            <input type="radio" name="status" value="3" title="交易成功" {if condition="$order.status eq 3"}checked{/if}>
+        </div>
+    </div>
+
+</form>
+<div class="layui-form-item">
+    <div class="layui-input-block">
+        <button class="layui-btn" onclick="confirm()">确认</button>
+    </div>
+</div>
+<script>
+    layui.use(['carousel', 'form'], function() {
+        var carousel = layui.carousel
+                , form = layui.form;
+    });
+    function confirm(){
+        var status=$("input[name='status']:checked").val();
+
+        var id=$('#id').val();
+        $.get('http://www.shop.com/admin/order/save_order',{status:status,id:id},function(res){
+            if(res.status){
+                parent.layer.msg(res.message,{icon:1});
+                parent.window.location.reload();
+            }else {
+                parent.layer.msg(res.message,{icon:2});
+                return false;
+            }
+        });
+    }
+</script>
+</body>
+</html>

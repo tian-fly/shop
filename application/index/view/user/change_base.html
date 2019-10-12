@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    {include file="public/header" /}
+    <script src="__STATIC__/layer/layer.js"></script>
+
+</head>
+<body>
+<form class="layui-form" action="" style="width: 800px;margin-top: 5px;">
+    <div class="layui-form-item">
+        <div class="layui-inline">
+            <label class="layui-form-label" style="width: 100px;">用户名&nbsp;<span class="layui-badge-dot"></span></label>
+            <div class="layui-input-inline">
+                <input type="text" name="user_name"  id="user_name" autocomplete="off" placeholder="由4-8位的汉字、字母和数字" class="layui-input" value="{$userBase.user_name}">
+            </div>
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-label" style="width: 100px;">电话号码&nbsp;<span class="layui-badge-dot"></span></label>
+            <div class="layui-input-inline">
+                <input type="text" name="phone"  id="phone" autocomplete="off" placeholder="请输入11位电话号码" class="layui-input" value="{$userBase.phone}">
+            </div>
+        </div>
+
+    </div>
+    <div class="layui-form-item">
+
+        <div class="layui-inline">
+            <label class="layui-form-label" style="width: 100px;">e&nbsp;m&nbsp;a&nbsp;i&nbsp;l&nbsp;<span class="layui-badge-dot"></span></label>
+            <div class="layui-input-inline">
+                <input type="text" name="email"  id="email" autocomplete="off" placeholder="要可用，用于密码找回" class="layui-input" value="{$userBase.email}">
+            </div>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-inline">
+            <label class="layui-form-label" style="width: 100px;">出生日期</label>
+            <div class="layui-input-inline">
+                <input type="text" name="birthday"  id="birthday" autocomplete="off" placeholder="点击选择日期" class="layui-input" value="{$userBase.birthday}">
+            </div>
+        </div>
+    </div>
+    <div class="layui-form-item" pane="">
+        <label class="layui-form-label">性别</label>
+        <div class="layui-input-block">
+            <input type="radio" name="sex" value="0" title="男"  {$userBase.sex==0?'checked':''}>
+            <input type="radio" name="sex" value="1" title="女"  {$userBase.sex==1?'checked':''}>
+            <input type="radio" name="sex" value="2" title="外星人" {$userBase.sex==2?'checked':''}>
+        </div>
+    </div>
+    <div class="layui-form-item layui-form-text">
+        <label class="layui-form-label">座右铭</label>
+        <div class="layui-input-block">
+            <textarea placeholder="请输入内容，只能10到50位长度哦" class="layui-textarea" name="motto" id="motto">{$userBase.motto}</textarea>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <button class="layui-btn" type="button" id="register">立即提交</button>
+            <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+        </div>
+    </div>
+</form>
+
+</body>
+<script>
+    //    layui.use(['form','laydate'], function() {
+    //        var laydate = layui.laydate,
+    //                form=layui.form();
+    //        laydate.render({
+    //            elem: '#birthday'
+    //        });
+    //        form.render();
+    //        //日期
+    //
+    //    })
+    layui.use(['form', 'laydate'], function() {
+        var form = layui.form
+                , laydate = layui.laydate;
+        laydate.render({
+            elem: '#birthday'
+        })
+    });
+
+    $('#register').click(function(){
+        var user_name= $.trim($('#user_name').val());
+        if(!user_name){
+            layer.msg('用户名不能为空',{icon:2});
+            return false;
+        }
+
+        var phone= $.trim($('#phone').val());
+        if(!phone){
+            layer.msg('电话不能为空',{icon:1});
+            return false;
+        }
+        var email= $.trim($('#email').val());
+        if(!email){
+            layer.msg('邮箱不能为空',{icon:1});
+            return false;
+        }
+        $.post('http://www.weibott.com/personal/saveChangeBaseMessage',$('form').serialize(),function(res){
+            if(res.status==1){
+                layer.msg(res.message,{icon:1});
+                parent.window.location.reload();
+            }else {
+                layer.msg(res.message,{icon:2});
+                return false;
+            }
+        },'json')
+    });
+
+</script>
+</html>

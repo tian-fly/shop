@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    {include file="public/header" /}
+</head>
+<body >
+<form class="layui-form" action="" style="width: 550px;">
+    <div class="layui-form-item layui-form-text">
+        <label class="layui-form-label"></label>
+        <div class="layui-input-block" style="margin-left: 1px;">
+            <textarea placeholder="请输入内容(160字)" class="layui-textarea" rows="6" id="feedText" ></textarea>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <button class="layui-btn" type="button" id="feedback">发送</button>
+            <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+        </div>
+    </div>
+
+
+</form>
+
+
+</body>
+<script>
+    layui.use(['form'], function() {
+        var form = layui.form;
+    });
+</script>
+<script>
+    $(function(){
+
+        $('#feedback').click(function(){
+            var content=$("#feedText").val();
+            if(!content){
+                layer.msg('内容不能为空哦',{icon:2});
+                return false;
+            }
+            if(content.length>160){
+                layer.msg('不能超过160字',{icon:2});
+                return false;
+            }
+            $.post('feedback/send',{content:content},function(res){
+                if(res.status==1){
+                    layer.msg(res.message,{icon:1});
+                    parent.window.location.reload();
+                }else {
+                    layer.msg(res.message,{icon:2});
+                    return false;
+                }
+            },'json')
+        });
+        $('input').keydown(function(e){
+            if(e.keyCode==13){
+                $('#feedback').click();
+            }
+        });
+
+    })
+</script>
+
+</html>

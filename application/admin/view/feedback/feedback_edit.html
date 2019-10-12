@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/layui/css/layui.css">
+    <script src="__STATIC__/js/jquery-3.4.1.min.js"></script>
+    <script src="__STATIC__/layui/layui.js"></script>
+
+    <script src="__STATIC__/layer/layer.js"></script>
+
+
+    <link rel="stylesheet" type="text/css" href="__STATIC__/css/bootstrap.min.css">
+    <script src="__STATIC__/js/bootstrap.min.js"></script>
+
+</head>
+<body>
+<div class="layui-row">
+    <div class="layui-col-md10 layui-col-md-offset1" style="margin-top: 10px">
+        <div class="layui-card" style="width: 900px;">
+            <div class="layui-card-header">
+                <div class="layui-row">
+                    <div class="layui-col-md1"><img src="{$feedback.user.avatar_url}" class="layui-nav-img" style="cursor: pointer;"></div>
+                    <div class="layui-col-md1">{$feedback.user.user_name}</div>
+                    <div class="layui-col-md2">{$feedback.create_time}</div>
+                </div>
+            </div>
+            <div class="layui-card-body">
+                {$feedback.content}
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    function redirectU(uid){
+        parent.window.location.href='/admin/user/searchUser?uid='+uid;
+    }
+</script>
+</body>
+</html>

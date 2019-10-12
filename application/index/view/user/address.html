@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>地址</title>
+    {include file='public/header' /}
+</head>
+<body >
+{include file="public/nav" /}
+{include file="public/nav_model" /}
+<div class="container" style="position: relative;top:50px;border: 2px solid black;box-shadow: 5px 5px;">
+    <h1>选择默认地址：</h1>
+    <form class="layui-form" >
+        <div class="layui-form-item">
+            <label class="layui-form-label" style="width: 100px">可选地址：</label>
+            <div class="layui-input-block">
+                {foreach name="$address" item="vo" }
+                <input type="radio" name="address" value="{$vo.id}" title="{$vo.name}{$vo.mobile}{$vo.province}{$vo.city}{$vo.zone}{$vo.detail}" {if condition="$vo.primary eq 1"}checked{/if}>
+                {/foreach}
+            </div>
+        </div>
+    </form>
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <button class="layui-btn" onclick="confirm()">确认</button>
+            <button class="layui-btn" onclick="back()">返回</button>
+            <button class="layui-btn" onclick="select()">添加新地址</button>
+        </div>
+    </div>
+</div>
+    <div class="container" style="margin-top: 100px">
+    <div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief">
+        <ul class="layui-tab-title">
+            <li class="layui-this">浏览过的商品</li>
+        </ul>
+        <div class="layui-tab-content">
+            <div class="layui-tab-item layui-show">
+                <div class="row">
+                    {foreach name="$visitProduct" item="vo"}
+                    <div class="col-sm-4 col-md-3" style="margin-left:80px;margin-top:15px;border: 1px solid blue;box-shadow: 2px 2px black;height: 400px;">
+                        <div class="thumbnail">
+                            <a style="cursor: pointer" href="http://www.shop.com/index/product/{$vo.id}"><img src="{$vo.centerImg.img_url}" alt="..." width="200" height="200"></a>
+                            <div class="caption">
+                                <h3>{$vo.name}</h3>
+                                <p>{$vo.introduce}</p>
+                                <p><a style="cursor: pointer" href="http://www.shop.com/index/product/{$vo.id}" class="btn btn-primary" role="button">&nbsp;进去看</a> </p>
+                            </div>
+                        </div>
+                    </div>
+                    {/foreach}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    layui.use(['carousel', 'form'], function() {
+        var carousel = layui.carousel
+                , form = layui.form;
+    });
+    function confirm(){
+        var address=$("input[name='address']:checked").val();
+        $.ajax({
+            type:'put',
+            url:'http://www.shop.com/index/address/update',
+            data:{address:address},
+            dataType:'json',
+            success:function(res){
+                if(res.status){
+                    parent.layer.msg(res.message,{icon:1});
+                    parent.window.location.reload();
+                }else{
+                    layer.msg(res.message,{icon:2});
+                    return false;
+                }
+            }
+
+        });
+    }
+    function back(){
+        history.back();
+    }
+
+    function select(){
+        layer.open({
+            type: 2,
+            title: '添加地址',
+            shadeClose: true,
+            shade: false,
+            maxmin: true, //开启最大化最小化按钮
+            area: ['800px', '500px'],
+            content: 'http://www.shop.com/index/address/add'
+        });
+    }
+</script>
+</body>
+</html>

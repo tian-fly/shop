@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>订单详情</title>
+    {include file='public/header' /}
+</head>
+<body>
+{include file="public/nav" /}
+{include file="public/nav_model" /}
+<div class="container">
+<table class="layui-table" lay-even lay-skin="nob">
+    <colgroup>
+        <col width="150">
+        <col>
+    </colgroup>
+    <tbody>
+    <tr>
+        <td>订单号</td>
+        <td>{$orderDetail.order_no}</td>
+    </tr>
+    <tr>
+        <td>下单用户</td>
+        <td>{$orderDetail.user.user_name}</td>
+    </tr>
+    <tr>
+        <td>商品数量</td>
+        <td>{$orderDetail.count}</td>
+    </tr>
+    <tr>
+        <td>商品名称</td>
+        <td>
+            {foreach name="$orderDetail.products" item="vo"}
+                {$vo.name}:{$vo.pivot.standard_id|getStandard}&nbsp;&nbsp;&nbsp;x{$vo.pivot.count}/
+            {/foreach}
+        </td>
+    </tr>
+    <tr>
+       <td>订单总价</td>
+        <td style="color:red;">¥{$orderDetail.total_price}</td>
+    </tr>
+    <tr>
+        <td>订单备注</td>
+        <td>{$orderDetail.remark}</td>
+    </tr>
+    <tr>
+        <td>收货人</td>
+        <td>{$orderDetail.pre_name}</td>
+    </tr>
+    <tr>
+        <td>收货人电话</td>
+        <td>{$orderDetail.pre_phone}</td>
+    </tr>
+    <tr>
+        <td>收货地址</td>
+        <td>{$orderDetail.pre_address}</td>
+    </tr>
+    <tr>
+        <td>订单状态</td>
+        <td style="color: red">{if condition="$orderDetail.status eq 0"}未支付{elseif condition="$orderDetail.status eq 1" /}已支付{elseif condition="$orderDetail.status eq 2"/}已发货{else /}交易成功{/if}</td>
+    </tr>
+    </tbody>
+</table>
+    <div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief">
+        <ul class="layui-tab-title">
+            <li class="layui-this">订单包含商品</li>
+        </ul>
+        <input type="hidden" id="order_no" value="{$orderDetail.order_no}">
+        <div class="layui-tab-content">
+            <div class="layui-tab-item layui-show">
+                <div class="row">
+                    {foreach name="$orderDetail.products" item="vo"}
+                    <div class="col-sm-4 col-md-3" style="margin-left:80px;margin-top:15px;border: 1px solid blue;box-shadow: 2px 2px black;height: 450px;">
+                        <div class="thumbnail">
+                            <img src="{$vo.pivot.standard_id|getStandardImg}" alt="..." width="200" height="200">
+                            <div class="caption">
+                                <h3>{$vo.name}</h3>
+                                <p>{$vo.introduce}</p>
+                                <input type="hidden" id="standard_id{$vo.id}" value="{$vo.pivot.standard_id}">
+                                <input type="hidden" id="count{$vo.id}" value="{$vo.pivot.count}">
+                                <p>{$vo.pivot.standard_id|getStandard}&nbsp;&nbsp;&nbsp;x{$vo.pivot.count}</p>
+                                <p style="color:red;">¥{$vo.pivot.standard_id|getStandardPrice}&nbsp;&nbsp;&nbsp;<a href="javascript:;" onclick="comment('{$vo.id}')" class="btn btn-primary radius">参与评论</a>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    {/foreach}
+                </div>
+            </div>
+        </div>
+    </div>
+    <span><button type="button" class="btn btn-info" onclick="back()"><span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span>返回</button>{if condition="$orderDetail.status eq 0"}&nbsp;&nbsp;&nbsp;&nbsp;<button type="button" class="btn btn-danger" onclick="pay('{$orderDetail.id}')">支付<span class="glyphicon glyphicon-share-alt" aria-hidden="true"></span></button>{/if}</span>
+</div>
+<script>
+
+    function back(){
+        history.back();
+    }
+
+    function pay(id){
+        window.location.href="http://www.shop.com/index/pay?id="+id;
+    }
+
+    function comment(id){
+        var standard_id=$('#standard_id'+id).val();
+        var count=$('#count'+id).val();
+        var order_no=$('#order_no').val();
+        layer.open({
+            type: 2,
+            title: '发送评论',
+            shadeClose: true,
+            shade: false,
+            maxmin: true, //开启最大化最小化按钮
+            area: ['800px', '400px'],
+            content: '/index/order/comment?id='+id+'&standard_id='+standard_id+'&count='+count+'&order_no='+order_no
+        });
+    }
+</script>
+</body>
+</html>

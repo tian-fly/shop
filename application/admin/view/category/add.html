@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    {include file="public/extend" /}
+</head>
+<body>
+<form class="layui-form" style="margin-top: 20px;">
+    <div class="layui-form-item">
+        <label class="layui-form-label" style="width: 100px;">分类名：</label>
+        <div class="layui-input-block">
+            <input type="text" name="name" placeholder="请输入分类名" autocomplete="off" class="layui-input" id="name">
+        </div>
+    </div>
+</form>
+<div class="layui-form-item">
+    <div class="layui-input-block">
+        <button class="layui-btn" onclick="confirm()">确认</button>
+    </div>
+</div>
+<script>
+    layui.use(['carousel', 'form'], function() {
+        var carousel = layui.carousel
+                , form = layui.form;
+    });
+
+    function confirm(){
+        var name= $.trim($('#name').val());
+        $.ajax({
+            type:'post',
+            url:'http://www.shop.com/admin/category/save',
+            data:{name:name},
+            dataType:'json',
+            success:function(res){
+                if(res.status){
+                    parent.layer.msg(res.message,{icon:1});
+                    parent.window.location.reload();
+                }else{
+                    layer.msg(res.message,{icon:2});
+                    return false;
+                }
+            }
+
+        });
+    }
+</script>
+ </body>
+</html>
