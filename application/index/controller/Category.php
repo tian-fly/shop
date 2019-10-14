@@ -12,7 +12,6 @@ use app\index\controller\Base as BaseController;
 use app\index\validate\IDNumber as IDNumberValidate;
 use app\lib\exception\Miss as MissException;
 use app\index\model\Product as ProductModel;
-
 class Category extends BaseController
 {
 

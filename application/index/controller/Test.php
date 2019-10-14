@@ -21,7 +21,6 @@ class Test extends Controller
 //        Loader::import('WxPay.WxPay', EXTEND_PATH, '.Api.php');
         Loader::import('WxpayAPI.lib.WxPay',EXTEND_PATH,'.Api.php');
         Loader::import('WxpayAPI.example.WxPay',EXTEND_PATH,'.Config.php');
-
         $config=new \WxPayConfig();
         $input=new \WxPayUnifiedOrder();
         $input->SetBody('测试');

@@ -17,7 +17,7 @@ class Product extends BaseController
     public function getOne($id){
        (new IDNumberValidate())->checked();
         $productDetail=ProductModel::getProductDetail($id);
-
+//     return $productDetail;
 //         $sell=Standard::where(['product_id'=>$productDetail['id']])->sum('sell');
 //        $productDetail['sell']=$sell;
 
